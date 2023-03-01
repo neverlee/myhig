@@ -64,6 +64,7 @@ def generate_retprocx(narg, nret):
 
 	header = """package myhig
 """
+
 	fromTemplate = Template("""
 func GetProcOfFunc${arg}r${ret}[${artany_list}](_ func(${args_list}) (${tonly_list})) (*RetProc${ret}[${tonly_list}]) {
 	rp := &RetProc${ret}[${tonly_list}]{}
@@ -71,6 +72,12 @@ func GetProcOfFunc${arg}r${ret}[${artany_list}](_ func(${args_list}) (${tonly_li
 }
 """)
 
+	fromlTemplate = Template("""
+func GetProcOfFunc${arg}vr${ret}[${artany_list}](_ func(${args_list}) (${tonly_list})) (*RetProc${ret}[${tonly_list}]) {
+	rp := &RetProc${ret}[${tonly_list}]{}
+	return rp
+}
+""")
 
 	# with sys.stdout as f:
 	with open("gen_retproc.go", "w") as f:
@@ -85,6 +92,17 @@ func GetProcOfFunc${arg}r${ret}[${artany_list}](_ func(${args_list}) (${tonly_li
 						"tonly_list": tonly_list(ret),
 						}
 				f.write(fromTemplate.substitute(d))
+
+		for arg in range(1, narg+1):
+			for ret in range(1, nret+1):
+				d = {
+						'arg': arg,
+						'ret': ret,
+						"artany_list": concat(concat(aany_list(arg-1), "AL any"), tany_list(ret)),
+						"args_list": concat(ps_list(arg-1, "_ A", ""), "_ ...AL"),
+						"tonly_list": tonly_list(ret),
+						}
+				f.write(fromlTemplate.substitute(d))
 
 
 def generate_tuplex(nt):
