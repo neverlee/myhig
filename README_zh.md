@@ -1,5 +1,7 @@
 Myhig 是一个可以让你开心写go的库
 
+[English Docs](https://github.com/neverlee/myhig/blob/main/README.md)
+
 # 依赖
 
 go 版本 >= 1.18
@@ -19,7 +21,7 @@ go get github.com/neverlee/myhig
 
 # 示例
 
-原始代码，这里一个个的检查是不是让人很不舒服
+原始代码
 ```
 func ReadConfig(path string) (*Config, error) {
     f, err := os.Open(path)
@@ -84,7 +86,7 @@ func A2(int) (int, bool)
 func A3(string, int) (int, bool)
 func A4(string, int, decimal.Decimal) (int, error)
 
-// RetProc2 是一个用于那些返回参数是三个的函数的流程控制器，比如下面这些函数:
+// RetProc3 是一个用于那些返回参数是三个的函数的流程控制器，比如下面这些函数:
 func B1() (int, int, error)
 func B2(int) (int, int, error)
 func B3(int, string) (int, int, error)
@@ -235,7 +237,6 @@ func FuncWithALastBoolReturn(arg1 string, arg2 int) (int, string, bool) {
 
 示例:
 ```
-// 函数返回参数最后一个是error类型
 func DoSomething(arg1 string, arg2 int) (int, string) {
     rp := GetProcOfFunc2r2(DoSomething) // or: rp := NewRetProc2[int, string]()
     return rp.Dow(func() {
@@ -250,7 +251,6 @@ func DoSomething(arg1 string, arg2 int) (int, string) {
 
 示例:
 ```
-// 函数返回参数最后一个是error类型
 func DoSomething(m map[int]string) (int, string) {
     rp := GetProcOfFunc1r2(DoSomething) // or: rp := NewRetProc2[int, string]()
     return rp.Dow(func() {
@@ -271,7 +271,6 @@ func DoSomething(m map[int]string) (int, string) {
 
 示例:
 ```
-// 函数返回参数最后一个是error类型
 func DoSomething(arg1 string, arg2 int) (int, string) {
     rp := GetProcOfFunc2r2(DoSomething) // or: rp := NewRetProc2[int, string]()
 
@@ -292,7 +291,6 @@ func DoSomething(arg1 string, arg2 int) (int, string) {
 
 示例:
 ```
-// 函数返回参数最后一个是error类型
 func DoSomething(arg1 string, arg2 int) (int, string) {
     rp := GetProcOfFunc2r2(DoSomething) // or: rp := NewRetProc2[int, string]()
 
@@ -411,4 +409,8 @@ func DoSomething(m map[int]string) (int, string, error) {
 }
 ```
 
-
+# 提醒事项
+* RetProc$的返回基于panic实现，相比常规return性能要低一些，所以：
+    * 不建议在需要被高频调用的小函数中使用
+    * 推荐在复杂业务函数中使用（如HTTP，RPC的接口实现函数）
+* 使用RetProc$时，不影响 panic 的正常调用。可放心使用
